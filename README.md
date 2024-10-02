@@ -7,7 +7,7 @@
 
 The Chemical Supplies Management System is a web-based application designed to streamline the tracking and management of chemical inventory. This system provides users with an intuitive table interface for managing chemical details such as names, vendors, densities, viscosities, and packaging types. The application also supports Progressive Web App (PWA) functionality, allowing it to be installed on mobile devices and used offline.
 
-![App Icon](./path_to_icon/your_icon.png)
+![App Icon](/chemical_android.png.png)
 
 ### Features:
 
@@ -161,6 +161,7 @@ You can simply run the application by opening `index.html` in your browser. No a
 
 chemical-supplies-management/
 │
+
 ├── index.html                # Main HTML page
 
 ├── style.css                 # CSS file for styling
