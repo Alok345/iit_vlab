@@ -1,0 +1,22 @@
+{
+  "name": "Chemical management",
+  "short_name": "Chem Supplies",
+  "description": "A tool to manage chemical supplies.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "chemical_android.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "chemical_androidd.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

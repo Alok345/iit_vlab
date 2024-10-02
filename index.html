@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chemical Supplies</title>
+    <link rel="manifest" href="manifest.json" />
+
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      td[contenteditable="true"] {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+      }
+      .toolbar {
+        text-align: right;
+        margin-bottom: 10px;
+      }
+      .toolbar button,
+      .arrow {
+        margin-left: 5px;
+        padding: 5px;
+        cursor: pointer;
+      }
+      .arrow {
+        font-size: 16px; /* Make arrows larger */
+      }
+      th {
+        cursor: pointer; /* Change cursor for clickable headers */
+        /* background-image: linear-gradient(45deg, red, rgb(0, 140, 255)); */
+        background-color: antiquewhite;
+        /* color: white; */
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Chemical Supplies</h2>
+
+      <div class="toolbar">
+        <button id="addBtn" onclick="addRow()">➕</button>
+        <span class="arrow" onclick="moveRow(-1)">&#8593;</span>
+        <span class="arrow" onclick="moveRow(1)">&#8595;</span>
+        <button id="deleteBtn" onclick="deleteSelectedRows()">🗑️</button>
+        <button id="resetBtn" onclick="resetTable()">🔄</button>
+        <!-- Updated button text -->
+        <button id="saveBtn" onclick="saveData()">💾</button>
+      </div>
+
+      <table id="chemicalTable" class="table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('select')">Select</th>
+            <th onclick="sortTable('id')">ID</th>
+            <th onclick="sortTable('chemical')">Chemical Name</th>
+            <th onclick="sortTable('vendor')">Vendor</th>
+            <th onclick="sortTable('density')">Density (g/m³)</th>
+            <th onclick="sortTable('viscosity')">Viscosity (m²/s)</th>
+            <th onclick="sortTable('packaging')">Packaging</th>
+            <th onclick="sortTable('packSize')">Pack Size</th>
+            <th onclick="sortTable('unit')">Unit</th>
+            <th onclick="sortTable('quantity')">Quantity</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <script>
+      let data = [];
+      let originalData = []; // New variable to hold the original data
+      let selectedRowIndex = null; // To keep track of the selected row for moving up/down
+      let sortOrder = true; // True for ascending, false for descending
+
+      window.onload = function () {
+        loadDataFromLocalStorage();
+        loadTable();
+      };
+
+      function loadDataFromLocalStorage() {
+        const storedData = localStorage.getItem("chemicalData");
+        if (storedData) {
+          data = JSON.parse(storedData);
+          originalData = JSON.parse(storedData); // Store the original data
+        } else {
+          data = [
+            {
+              id: 1,
+              chemical: "Ammonium Persulfate",
+              vendor: "LG Chem",
+              density: 3525.92,
+              viscosity: 60.63,
+              packaging: "Bag",
+              packSize: 100.0,
+              unit: "kg",
+              quantity: 6495.18,
+            },
+            {
+              id: 2,
+              chemical: "Caustic Potash",
+              vendor: "Formosa",
+              density: 3172.15,
+              viscosity: 48.22,
+              packaging: "Bag",
+              packSize: 100.0,
+              unit: "kg",
+              quantity: 8751.9,
+            },
+            {
+              id: 3,
+              chemical: "Dimethylaminopropylamino",
+              vendor: "LG Chem",
+              density: 8435.37,
+              viscosity: 12.62,
+              packaging: "Barrel",
+              packSize: 75.0,
+              unit: "L",
+              quantity: 5964.61,
+            },
+            {
+              id: 4,
+              chemical: "Mono Ammonium Phosphate",
+              vendor: "Sinopec",
+              density: 1597.65,
+              viscosity: 76.51,
+              packaging: "Bag",
+              packSize: 105.0,
+              unit: "kg",
+              quantity: 8183.73,
+            },
+            {
+              id: 5,
+              chemical: "Ferric Nitrate",
+              vendor: "DowDuPont",
+              density: 364.04,
+              viscosity: 14.9,
+              packaging: "Bag",
+              packSize: 105.0,
+              unit: "kg",
+              quantity: 4154.33,
+            },
+            {
+              id: 6,
+              chemical: "n-Pentane",
+              vendor: "Sinopec",
+              density: 4535.26,
+              viscosity: 66.76,
+              packaging: "N/A",
+              packSize: 0,
+              unit: "t",
+              quantity: 6272.34,
+            },
+            {
+              id: 7,
+              chemical: "Glycol Ether PM",
+              vendor: "LG Chem",
+              density: 6495.18,
+              viscosity: 72.12,
+              packaging: "Bag",
+              packSize: 250.0,
+              unit: "kg",
+              quantity: 8749.54,
+            },
+          ];
+          saveDataToLocalStorage();
+          originalData = JSON.parse(JSON.stringify(data)); // Store the original data
+        }
+      }
+
+      function loadTable() {
+        const tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
+        data.forEach((item, index) => {
+          const row = `
+          <tr class="jspider" onclick="selectRow(${index})">
+            <td><input type="checkbox" class="selectRow"></td>
+            <td>${item.id}</td>
+            <td contenteditable="true" oninput="updateData(${index}, 'chemical', this.innerText)">${item.chemical}</td>
+            <td contenteditable="true" oninput="updateData(${index}, 'vendor', this.innerText)">${item.vendor}</td>
+            <td contenteditable="true" oninput="updateData(${index}, 'density', this.innerText)">${item.density}</td>
+            <td contenteditable="true" oninput="updateData(${index}, 'viscosity', this.innerText)">${item.viscosity}</td>
+            <td contenteditable="true" oninput="updateData(${index}, 'packaging', this.innerText)">${item.packaging}</td>
+            <td contenteditable="true" oninput="updateData(${index}, 'packSize', this.innerText)">${item.packSize}</td>
+            <td contenteditable="true" oninput="updateData(${index}, 'unit', this.innerText)">${item.unit}</td>
+            <td contenteditable="true" oninput="updateData(${index}, 'quantity', this.innerText)">${item.quantity}</td>
+          </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+
+      function updateData(index, key, value) {
+        if (
+          key === "density" ||
+          key === "viscosity" ||
+          key === "packSize" ||
+          key === "quantity"
+        ) {
+          value = parseFloat(value); // Convert numeric fields to numbers
+        }
+        data[index][key] = value;
+      }
+
+      function selectRow(index) {
+        selectedRowIndex = index; // Set selected row index
+      }
+
+      function moveRow(direction) {
+        if (selectedRowIndex === null) {
+          alert("Please select a row to move."); // Alert if no row is selected
+          return;
+        }
+
+        const targetIndex = selectedRowIndex + direction;
+        if (targetIndex >= 0 && targetIndex < data.length) {
+          const temp = data[selectedRowIndex];
+          data[selectedRowIndex] = data[targetIndex];
+          data[targetIndex] = temp;
+          selectedRowIndex = targetIndex; // Update selected row index
+          loadTable(); // Reload the table to reflect the changes
+        }
+      }
+
+      function addRow() {
+        const newRow = {
+          id: data.length + 1, // Unique ID
+          chemical: "New Chemical",
+          vendor: "New Vendor",
+          density: 0,
+          viscosity: 0,
+          packaging: "Bag",
+          packSize: 0,
+          unit: "kg",
+          quantity: 0,
+        };
+        data.push(newRow);
+        loadTable(); // Reload the table with new data
+      }
+
+      function deleteSelectedRows() {
+        const checkboxes = document.querySelectorAll(".selectRow:checked");
+        checkboxes.forEach((checkbox) => {
+          const rowIndex = checkbox.parentNode.parentNode.rowIndex - 1;
+          data.splice(rowIndex, 1);
+        });
+        loadTable(); // Reload the table without the deleted rows
+      }
+
+      function resetTable() {
+        // data = JSON.parse(JSON.stringify(originalData)); // Restore data to original
+        // loadTable(); // Reload the table to reflect the reset
+
+        localStorage.removeItem("chemicalData");
+
+        // Reset the data to the original state (if you want to keep original data)
+        data = JSON.parse(JSON.stringify(originalData)); // Restore original data
+
+        loadTable(); // Reload the table to reflect the changes
+        location.reload();
+        alert("Local storage cleared. Data is reset to the original state.");
+      }
+
+      function saveData() {
+        saveDataToLocalStorage();
+        alert("Data saved successfully!");
+      }
+
+      function saveDataToLocalStorage() {
+        localStorage.setItem("chemicalData", JSON.stringify(data));
+        originalData = JSON.parse(JSON.stringify(data)); // Update original data to match the saved data
+      }
+
+      function sortTable(key) {
+        if (key === "select") return; // No sorting for checkbox column
+        const isNumeric = [
+          "id",
+          "density",
+          "viscosity",
+          "packSize",
+          "quantity",
+        ].includes(key);
+        data.sort((a, b) => {
+          const valueA = isNumeric ? a[key] : a[key].toLowerCase();
+          const valueB = isNumeric ? b[key] : b[key].toLowerCase();
+          return sortOrder
+            ? valueA > valueB
+              ? 1
+              : -1
+            : valueA < valueB
+            ? 1
+            : -1;
+        });
+        sortOrder = !sortOrder; // Toggle sort order
+        loadTable(); // Reload the table to reflect the sorted data
+      }
+    </script>
+
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/service-worker.js").then(
+        function (registration) {
+          console.log("ServiceWorker registration successful with scope: ", registration.scope);
+        },
+        function (err) {
+          console.log("ServiceWorker registration failed: ", err);
+        }
+      );
+    });
+  }
+</script>
+
+  </body>
+</html>
