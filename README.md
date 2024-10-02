@@ -1,6 +1,6 @@
 
 
-```markdown
+
 # Chemical Supplies Management System (Progressive Web App)
 
 ## Overview
@@ -21,14 +21,23 @@ The Chemical Supplies Management System is a web-based application designed to s
 ## Table of Contents
 
 - [Project Structure](#project-structure)
+  
 - [Features](#features)
+  
 - [Installation](#installation)
+  
 - [Running the App](#running-the-app)
+  
 - [PWA Features](#pwa-features)
+  
 - [Technologies Used](#technologies-used)
+
 - [File Structure](#file-structure)
+
 - [Development Setup](#development-setup)
+
 - [Contributing](#contributing)
+
 - [License](#license)
 
 ## Project Structure
@@ -37,22 +46,28 @@ The Chemical Supplies Management System is a web-based application designed to s
 chemical-supplies-management/
 │
 ├── index.html
+
 ├── style.css
+
 ├── app.js
+
 ├── manifest.json
+
 ├── service-worker.js
+
 ├── icon-192x192.png
+
 └── README.md
 ```
 
 ### Key Files:
 
-- `index.html`: The main HTML page that displays the application interface.
-- `style.css`: Contains all the custom styles and layout for the app.
-- `app.js`: JavaScript functionality that handles data manipulation, sorting, and saving.
-- `manifest.json`: Defines metadata for PWA functionality.
-- `service-worker.js`: Manages caching and offline usage for the PWA.
-- `images/`: Directory containing app icons and other image assets.
+- index.html: The main HTML page that displays the application interface.
+- style.css: Contains all the custom styles and layout for the app.
+- app.js: JavaScript functionality that handles data manipulation, sorting, and saving.
+- manifest.json: Defines metadata for PWA functionality.
+- service-worker.js: Manages caching and offline usage for the PWA.
+- Same Directory : Directory containing app icons and other image assets.
 
 ## Features
 
@@ -147,12 +162,19 @@ You can simply run the application by opening `index.html` in your browser. No a
 chemical-supplies-management/
 │
 ├── index.html                # Main HTML page
+
 ├── style.css                 # CSS file for styling
+
 ├── app.js                    # JavaScript file for handling app functionality
+
 ├── manifest.json             # PWA manifest
+
 ├── service-worker.js         # Service worker for offline support
+
 ├── icon-192x192.png          # App icon
+
 └── README.md                 # Project documentation
+
 
 
 ## Development Setup
@@ -213,5 +235,5 @@ This project is licensed under the MIT License. For more details, see the [LICEN
 - Progressive Web Apps: [Web.Dev PWA Guide](https://web.dev/progressive-web-apps/)
 - Local Storage: [MDN Local Storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
 - Service Workers: [Google Developers - Service Workers](https://developers.google.com/web/fundamentals/primers/service-workers)
-```
+
 
